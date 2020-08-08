@@ -1,7 +1,7 @@
-package com.example.demo.controller;
+package com.example.demo.controller.user;
 
-import com.example.demo.model.User;
-import com.example.demo.service.UserService;
+import com.example.demo.model.user.User;
+import com.example.demo.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ public class UserController {
     public UserService userService;
 
     //API trả về List User.
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<List<User>> listAllUsers() {
         List<User> accounts = userService.findAll();
         if (accounts.isEmpty()) {
@@ -28,7 +28,7 @@ public class UserController {
     }
 
     //API trả về User có ID trên url.
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
         System.out.println("Fetching User with id " + id);
         User account = userService.findById(id);
@@ -40,35 +40,35 @@ public class UserController {
     }
 
     //API tạo một Admin mới.
-    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
     public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder) {
         System.out.println("Creating User " + user.getName());
         userService.updateUser(user);
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
 
     //API cập nhật một Admin với ID trên url.
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<User> updateAdmin(@PathVariable("id") Long id, @RequestBody User user) {
         System.out.println("Updating User " + id);
 
-        User curremUser = userService.findById(id);
+        User current = userService.findById(id);
 
-        if (curremUser == null) {
+        if (current == null) {
             System.out.println("User with id " + id + " not found");
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
         }
 
-        curremUser = user;
+        current = user;
 
-        userService.updateUser(curremUser);
-        return new ResponseEntity<User>(curremUser, HttpStatus.OK);
+        userService.updateUser(current);
+        return new ResponseEntity<User>(current, HttpStatus.OK);
     }
 
     //API xóa một Admin với ID trên url.
-    @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<User> deleteUser(@PathVariable("id") Long id) {
         System.out.println("Fetching & Deleting User with id " + id);
 

@@ -1,7 +1,9 @@
-package com.example.demo.service;
+package com.example.demo.service.user;
 
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.model.user.Passenger;
+import com.example.demo.model.user.User;
+import com.example.demo.repository.user.PassengerRepository;
+import com.example.demo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PassengerRepository passengerRepository;
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -22,6 +26,7 @@ public class UserService {
 
     public void createUser(User user) {
         userRepository.save(user);
+        passengerRepository.save(new Passenger(user));
     }
 
     public void updateUser(User user) {
@@ -29,7 +34,9 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
+        Passenger passenger = passengerRepository.findByUser(userRepository.findById(id).get());
         userRepository.deleteById(id);
+        passengerRepository.delete(passenger);
     }
 
     public User findByUsername(String username) {

@@ -1,8 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.service.authentication;
 
-import com.example.demo.model.CustomUser;
-import com.example.demo.model.RequestUser;
-import com.example.demo.repository.CustomUserRepository;
+import com.example.demo.model.authentication.CustomUser;
+import com.example.demo.model.authentication.RequestUser;
+import com.example.demo.repository.authentication.CustomUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

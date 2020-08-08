@@ -1,6 +1,6 @@
-package com.example.demo.repository;
+package com.example.demo.repository.authentication;
 
-import com.example.demo.model.CustomUser;
+import com.example.demo.model.authentication.CustomUser;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

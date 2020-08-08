@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.model.user;
 
 
 import javax.persistence.*;
@@ -35,6 +35,8 @@ public class User {
     private String avatar;
 
     private String token;
+
+    private boolean isDriver;
 
     public User() {
     }
@@ -146,5 +148,13 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public boolean isDriver() {
+        return isDriver;
+    }
+
+    public void setDriver(boolean driver) {
+        isDriver = driver;
     }
 }

@@ -1,12 +1,12 @@
-package com.example.demo.controller;
+package com.example.demo.controller.authentication;
 
 import com.example.demo.config.JwtTokenUtil;
-import com.example.demo.model.JwtRequest;
-import com.example.demo.model.JwtResponse;
-import com.example.demo.model.RequestUser;
-import com.example.demo.model.User;
-import com.example.demo.service.JwtUserDetailsService;
-import com.example.demo.service.UserService;
+import com.example.demo.model.authentication.JwtRequest;
+import com.example.demo.model.authentication.JwtResponse;
+import com.example.demo.model.authentication.RequestUser;
+import com.example.demo.model.user.User;
+import com.example.demo.service.authentication.JwtUserDetailsService;
+import com.example.demo.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,7 +54,7 @@ public class JwtAuthenController {
         for (User userFor : users) {
             if (userFor.getUsername().equals(user.getUsername())) isExit = true;
         }
-        if (isExit == false) {
+        if (!isExit) {
             User userSave = new User(user.getUsername(), user.getPassword());
             userService.createUser(userSave);
             return ResponseEntity.ok(userDetailsService.save(user));
