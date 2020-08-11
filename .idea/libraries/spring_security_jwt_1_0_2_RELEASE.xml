@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="spring-security-jwt-1.0.2.RELEASE">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/spring-security-jwt-1.0.2.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
