@@ -4,10 +4,8 @@ import com.example.demo.config.JwtTokenUtil;
 import com.example.demo.model.authentication.JwtRequest;
 import com.example.demo.model.authentication.JwtResponse;
 import com.example.demo.model.authentication.RequestUser;
-import com.example.demo.model.user.Passenger;
 import com.example.demo.model.user.User;
 import com.example.demo.service.authentication.JwtUserDetailsService;
-import com.example.demo.service.user.PassengerService;
 import com.example.demo.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,12 +35,8 @@ public class JwtAuthenController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
-    @Autowired
-    private PassengerService passengerService;
-
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
@@ -63,6 +57,7 @@ public class JwtAuthenController {
         if (!isExit) {
             User userSave = new User(user.getUsername(), user.getPassword());
             userService.createUser(userSave);
+            userDetailsService.save(new RequestUser(user.getUsername(), user.getPassword()));
             return new ResponseEntity<User>(user, HttpStatus.OK);
         } else {
             return new ResponseEntity<User>(user, HttpStatus.CONFLICT);
