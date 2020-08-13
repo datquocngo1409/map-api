@@ -10,6 +10,7 @@ import com.example.demo.service.authentication.JwtUserDetailsService;
 import com.example.demo.service.user.PassengerService;
 import com.example.demo.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -53,7 +54,7 @@ public class JwtAuthenController {
     }
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public ResponseEntity<?> saveUser(@RequestBody User user) throws Exception {
+    public ResponseEntity<User> saveUser(@RequestBody User user) throws Exception {
         List<User> users = userService.findAll();
         boolean isExit = false;
         for (User userFor : users) {
@@ -63,9 +64,10 @@ public class JwtAuthenController {
             User userSave = new User(user.getUsername(), user.getPassword());
             userService.createUser(userSave);
             passengerService.updatePassenger(new Passenger(user));
-            return ResponseEntity.ok(userDetailsService.save(new RequestUser(user.getUsername(), user.getPassword())));
+            userDetailsService.save(new RequestUser(user.getUsername(), user.getPassword()));
+             return new ResponseEntity<User>(user, HttpStatus.OK);
         } else {
-            return ResponseEntity.ok(null);
+            return new ResponseEntity<User>(user, HttpStatus.CONFLICT);
         }
     }
 
