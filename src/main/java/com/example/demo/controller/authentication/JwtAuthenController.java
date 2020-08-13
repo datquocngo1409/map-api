@@ -4,8 +4,10 @@ import com.example.demo.config.JwtTokenUtil;
 import com.example.demo.model.authentication.JwtRequest;
 import com.example.demo.model.authentication.JwtResponse;
 import com.example.demo.model.authentication.RequestUser;
+import com.example.demo.model.user.Passenger;
 import com.example.demo.model.user.User;
 import com.example.demo.service.authentication.JwtUserDetailsService;
+import com.example.demo.service.user.PassengerService;
 import com.example.demo.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,9 @@ public class JwtAuthenController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
+    @Autowired
+    private PassengerService passengerService;
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
@@ -48,7 +53,7 @@ public class JwtAuthenController {
     }
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public ResponseEntity<?> saveUser(@RequestBody RequestUser user) throws Exception {
+    public ResponseEntity<?> saveUser(@RequestBody User user) throws Exception {
         List<User> users = userService.findAll();
         boolean isExit = false;
         for (User userFor : users) {
@@ -57,7 +62,8 @@ public class JwtAuthenController {
         if (!isExit) {
             User userSave = new User(user.getUsername(), user.getPassword());
             userService.createUser(userSave);
-            return ResponseEntity.ok(userDetailsService.save(user));
+            passengerService.updatePassenger(new Passenger(user));
+            return ResponseEntity.ok(userDetailsService.save(new RequestUser(user.getUsername(), user.getPassword())));
         } else {
             return ResponseEntity.ok(null);
         }

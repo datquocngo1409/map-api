@@ -1,8 +1,11 @@
 package com.example.demo.model.user;
 
 
+import com.example.demo.model.location.Location;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @Table(name = "tbl_User")
@@ -20,11 +23,11 @@ public class User {
 
     private String name;
 
+    private Date birthDay;
+
     private Long age;
 
     private String type;
-
-    private String address;
 
     private String phone;
 
@@ -36,6 +39,12 @@ public class User {
 
     private String token;
 
+    @OneToOne
+    private Location homeAddress;
+
+    @OneToOne
+    private Location officeAddress;
+
     private boolean isDriver;
 
     public User() {
@@ -44,6 +53,37 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(String username, String password, String name, Date birthDay, String phone, String email, String avatar, Location homeAddress, Location officeAddress, boolean isDriver) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.birthDay = birthDay;
+        this.phone = phone;
+        this.email = email;
+        this.avatar = avatar;
+        this.homeAddress = homeAddress;
+        this.officeAddress = officeAddress;
+        this.isDriver = isDriver;
+    }
+
+    public User(String username, String password, String role, String name, Date birthDay, Long age, String type, String phone, String email, String idNumber, String avatar, String token, Location homeAddress, Location officeAddress, boolean isDriver) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.name = name;
+        this.birthDay = birthDay;
+        this.age = age;
+        this.type = type;
+        this.phone = phone;
+        this.email = email;
+        this.idNumber = idNumber;
+        this.avatar = avatar;
+        this.token = token;
+        this.homeAddress = homeAddress;
+        this.officeAddress = officeAddress;
+        this.isDriver = isDriver;
     }
 
     public Long getId() {
@@ -102,14 +142,6 @@ public class User {
         this.type = type;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -156,5 +188,29 @@ public class User {
 
     public void setDriver(boolean driver) {
         isDriver = driver;
+    }
+
+    public Location getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Location homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+
+    public Location getOfficeAddress() {
+        return officeAddress;
+    }
+
+    public void setOfficeAddress(Location officeAddress) {
+        this.officeAddress = officeAddress;
+    }
+
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(Date birthDay) {
+        this.birthDay = birthDay;
     }
 }
