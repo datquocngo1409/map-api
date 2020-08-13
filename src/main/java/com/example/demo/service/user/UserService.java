@@ -5,6 +5,7 @@ import com.example.demo.model.user.User;
 import com.example.demo.repository.user.PassengerRepository;
 import com.example.demo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private PassengerRepository passengerRepository;
+    @Autowired
+    private PasswordEncoder bcryptEncoder;
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -25,6 +28,7 @@ public class UserService {
     }
 
     public void createUser(User user) {
+        user.setPassword(bcryptEncoder.encode(user.getPassword()));
         userRepository.save(user);
         passengerRepository.save(new Passenger(user));
     }
