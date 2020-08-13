@@ -24,6 +24,7 @@ public class User {
 
     private String name;
 
+    @Column(name = "birth_day")
     private Date birthDay;
 
     private Long age;
@@ -34,6 +35,7 @@ public class User {
 
     private String email;
 
+    @Column(name = "id_number")
     private String idNumber;
 
     private String avatar;
@@ -41,11 +43,14 @@ public class User {
     private String token;
 
     @OneToOne
+    @Column(name = "home_address")
     private GeoPoint homeAddress;
 
     @OneToOne
+    @Column(name = "office_address")
     private GeoPoint officeAddress;
 
+    @Column(name = "is_driver")
     private boolean isDriver;
 
     public User() {
