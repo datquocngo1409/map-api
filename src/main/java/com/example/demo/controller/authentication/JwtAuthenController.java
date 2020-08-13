@@ -64,8 +64,7 @@ public class JwtAuthenController {
             User userSave = new User(user.getUsername(), user.getPassword());
             userService.createUser(userSave);
             passengerService.updatePassenger(new Passenger(user));
-            userDetailsService.save(new RequestUser(user.getUsername(), user.getPassword()));
-             return new ResponseEntity<User>(user, HttpStatus.OK);
+            return new ResponseEntity<User>(user, HttpStatus.OK);
         } else {
             return new ResponseEntity<User>(user, HttpStatus.CONFLICT);
         }
