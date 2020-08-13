@@ -1,6 +1,7 @@
 package com.example.demo.model.user;
 
 
+import com.example.demo.model.location.GeoPoint;
 import com.example.demo.model.location.Location;
 
 import javax.persistence.*;
@@ -40,10 +41,10 @@ public class User {
     private String token;
 
     @OneToOne
-    private Location homeAddress;
+    private GeoPoint homeAddress;
 
     @OneToOne
-    private Location officeAddress;
+    private GeoPoint officeAddress;
 
     private boolean isDriver;
 
@@ -55,7 +56,7 @@ public class User {
         this.password = password;
     }
 
-    public User(String username, String password, String name, Date birthDay, String phone, String email, String avatar, Location homeAddress, Location officeAddress, boolean isDriver) {
+    public User(String username, String password, String name, Date birthDay, String phone, String email, String avatar, GeoPoint homeAddress, GeoPoint officeAddress, boolean isDriver) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -68,7 +69,7 @@ public class User {
         this.isDriver = isDriver;
     }
 
-    public User(String username, String password, String role, String name, Date birthDay, Long age, String type, String phone, String email, String idNumber, String avatar, String token, Location homeAddress, Location officeAddress, boolean isDriver) {
+    public User(String username, String password, String role, String name, Date birthDay, Long age, String type, String phone, String email, String idNumber, String avatar, String token, GeoPoint homeAddress, GeoPoint officeAddress, boolean isDriver) {
         this.username = username;
         this.password = password;
         this.role = role;
@@ -190,19 +191,19 @@ public class User {
         isDriver = driver;
     }
 
-    public Location getHomeAddress() {
+    public GeoPoint getHomeAddress() {
         return homeAddress;
     }
 
-    public void setHomeAddress(Location homeAddress) {
+    public void setHomeAddress(GeoPoint homeAddress) {
         this.homeAddress = homeAddress;
     }
 
-    public Location getOfficeAddress() {
+    public GeoPoint getOfficeAddress() {
         return officeAddress;
     }
 
-    public void setOfficeAddress(Location officeAddress) {
+    public void setOfficeAddress(GeoPoint officeAddress) {
         this.officeAddress = officeAddress;
     }
 
