@@ -40,7 +40,7 @@ public class UserController {
     }
 
     //API trả về User có Token trên url.
-    @RequestMapping(value = "/user/byToken", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/user/byToken", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUserByIdByToken(@RequestBody String token) {
         System.out.println("Fetching User with token " + token);
         User account = userService.findByToken(token);
