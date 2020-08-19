@@ -39,6 +39,18 @@ public class UserController {
         return new ResponseEntity<User>(account, HttpStatus.OK);
     }
 
+    //API trả về User có Token trên url.
+    @RequestMapping(value = "/user/byToken", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> getUserByIdByToken(@RequestBody String token) {
+        System.out.println("Fetching User with token " + token);
+        User account = userService.findByToken(token);
+        if (account == null) {
+            System.out.println("User with token " + token + " not found");
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<User>(account, HttpStatus.OK);
+    }
+
     //API tạo một Admin mới.
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder) {
