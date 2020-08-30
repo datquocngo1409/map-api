@@ -7,6 +7,7 @@ import com.example.demo.model.location.Location;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_User")
@@ -45,6 +46,15 @@ public class User {
 
     @OneToOne
     private GeoPoint officeAddress;
+
+    @ManyToMany
+    private List<User> friends;
+
+    @ManyToMany
+    private List<User> familyMembers;
+
+    @ManyToMany
+    private List<User> colleagues;
 
     private boolean isDriver;
 
@@ -213,5 +223,29 @@ public class User {
 
     public void setBirthDay(Date birthDay) {
         this.birthDay = birthDay;
+    }
+
+    public List<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<User> friends) {
+        this.friends = friends;
+    }
+
+    public List<User> getFamilyMembers() {
+        return familyMembers;
+    }
+
+    public void setFamilyMembers(List<User> familyMembers) {
+        this.familyMembers = familyMembers;
+    }
+
+    public List<User> getColleagues() {
+        return colleagues;
+    }
+
+    public void setColleagues(List<User> colleagues) {
+        this.colleagues = colleagues;
     }
 }
