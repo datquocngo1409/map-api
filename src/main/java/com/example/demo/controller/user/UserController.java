@@ -381,6 +381,60 @@ public class UserController {
         return new ResponseEntity<List<UserDto>>(userDtos, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/getNotFriend/{id}", method = RequestMethod.GET)
+    public ResponseEntity<List<UserDto>> listNotFriendById(@PathVariable("id") Long id) {
+        User current = userService.findById(id);
+        List<User> allUsers = userService.findAll();
+        List<User> friends = current.getFriends();
+        List<UserDto> userDtos = new ArrayList<>();
+        for (User user : allUsers) {
+            if (!friends.contains(user)) {
+                UserDto userDto = new UserDto(user);
+                userDtos.add(userDto);
+            }
+        }
+        if (userDtos.isEmpty()) {
+            return new ResponseEntity<List<UserDto>>(HttpStatus.NO_CONTENT);//You many decide to return HttpStatus.NOT_FOUND
+        }
+        return new ResponseEntity<List<UserDto>>(userDtos, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getNotFamilyMember/{id}", method = RequestMethod.GET)
+    public ResponseEntity<List<UserDto>> listNotFamilyMemberById(@PathVariable("id") Long id) {
+        User current = userService.findById(id);
+        List<User> allUsers = userService.findAll();
+        List<User> familyMembers = current.getFamilyMembers();
+        List<UserDto> userDtos = new ArrayList<>();
+        for (User user : allUsers) {
+            if (!familyMembers.contains(user)) {
+                UserDto userDto = new UserDto(user);
+                userDtos.add(userDto);
+            }
+        }
+        if (userDtos.isEmpty()) {
+            return new ResponseEntity<List<UserDto>>(HttpStatus.NO_CONTENT);//You many decide to return HttpStatus.NOT_FOUND
+        }
+        return new ResponseEntity<List<UserDto>>(userDtos, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getNotColleague/{id}", method = RequestMethod.GET)
+    public ResponseEntity<List<UserDto>> listNotColleagueById(@PathVariable("id") Long id) {
+        User current = userService.findById(id);
+        List<User> allUsers = userService.findAll();
+        List<User> colleagues = current.getColleagues();
+        List<UserDto> userDtos = new ArrayList<>();
+        for (User user : allUsers) {
+            if (!colleagues.contains(user)) {
+                UserDto userDto = new UserDto(user);
+                userDtos.add(userDto);
+            }
+        }
+        if (userDtos.isEmpty()) {
+            return new ResponseEntity<List<UserDto>>(HttpStatus.NO_CONTENT);//You many decide to return HttpStatus.NOT_FOUND
+        }
+        return new ResponseEntity<List<UserDto>>(userDtos, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/isFriend/{idOne}/{idTwo}", method = RequestMethod.GET)
     public ResponseEntity<List<User>> isFriend(@PathVariable("idOne") Long id1, @PathVariable("idTwo") Long id2) {
         User friend1 = userService.findById(id1);
