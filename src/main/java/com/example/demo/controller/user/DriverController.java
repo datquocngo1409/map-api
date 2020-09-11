@@ -1,7 +1,9 @@
 package com.example.demo.controller.user;
 
 import com.example.demo.model.user.Driver;
+import com.example.demo.model.user.User;
 import com.example.demo.service.user.DriverService;
+import com.example.demo.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import java.util.List;
 public class DriverController {
     @Autowired
     public DriverService driverService;
+    @Autowired
+    private UserService userService;
 
     //API trả về List Driver.
     @RequestMapping(value = "/driver", method = RequestMethod.GET)
@@ -24,6 +28,9 @@ public class DriverController {
         List<Driver> accounts = driverService.findAll();
         if (accounts.isEmpty()) {
             return new ResponseEntity<List<Driver>>(HttpStatus.NO_CONTENT);//You many decide to return HttpStatus.NOT_FOUND
+        }
+        for (Driver d : accounts) {
+            d.setUser(null);
         }
         return new ResponseEntity<List<Driver>>(accounts, HttpStatus.OK);
     }
@@ -37,12 +44,15 @@ public class DriverController {
             System.out.println("Driver with id " + id + " not found");
             return new ResponseEntity<Driver>(HttpStatus.NOT_FOUND);
         }
+        account.setUser(null);
         return new ResponseEntity<Driver>(account, HttpStatus.OK);
     }
 
     //API tạo một Admin mới.
-    @RequestMapping(value = "/driver", method = RequestMethod.POST)
-    public ResponseEntity<Void> createDriver(@RequestBody Driver driver, UriComponentsBuilder ucBuilder) {
+    @RequestMapping(value = "/driver/{userId}", method = RequestMethod.POST)
+    public ResponseEntity<Void> createDriver(@RequestBody Driver driver, UriComponentsBuilder ucBuilder, @PathVariable("userId") Long userId) {
+        User user = userService.findById(userId);
+        driver.setUser(user);
         System.out.println("Creating Driver " + driver.getUser().getName());
         driverService.updateDriver(driver);
         HttpHeaders headers = new HttpHeaders();
@@ -65,6 +75,7 @@ public class DriverController {
         current = driver;
 
         driverService.updateDriver(current);
+        current.setUser(null);
         return new ResponseEntity<Driver>(current, HttpStatus.OK);
     }
 

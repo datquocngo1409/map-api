@@ -16,15 +16,19 @@ public class Location {
     private double latitude;
 
     @NotNull
-    private double longtitude;
+    private double longitude;
 
+    private boolean isHome;
+
+    @NotNull
     public Location() {
     }
 
-    public Location(String type, @NotNull double latitude, @NotNull double longtitude) {
+    public Location(String type, @NotNull double latitude, @NotNull double longitude, @NotNull boolean isHome) {
         this.type = type;
         this.latitude = latitude;
-        this.longtitude = longtitude;
+        this.longitude = longitude;
+        this.isHome = isHome;
     }
 
     public long getId() {
@@ -51,11 +55,19 @@ public class Location {
         this.latitude = latitude;
     }
 
-    public double getLongtitude() {
-        return longtitude;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setLongtitude(double longtitude) {
-        this.longtitude = longtitude;
+    public void setLongitude(double longtitude) {
+        this.longitude = longtitude;
+    }
+
+    public boolean isHome() {
+        return isHome;
+    }
+
+    public void setHome(boolean home) {
+        isHome = home;
     }
 }

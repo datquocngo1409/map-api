@@ -1,7 +1,11 @@
 package com.example.demo.controller.user;
 
 import com.example.demo.dto.user.UserDto;
+import com.example.demo.model.location.GeoPoint;
+import com.example.demo.model.location.Location;
 import com.example.demo.model.user.User;
+import com.example.demo.service.location.GeoPointService;
+import com.example.demo.service.location.LocationService;
 import com.example.demo.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +22,12 @@ import java.util.List;
 public class UserController {
     @Autowired
     public UserService userService;
+
+    @Autowired
+    private LocationService locationService;
+
+    @Autowired
+    private GeoPointService geoPointService;
 
     //API trả về List User.
     @RequestMapping(value = "/user", method = RequestMethod.GET)
@@ -68,7 +78,27 @@ public class UserController {
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder) {
         System.out.println("Creating User " + user.getName());
-        userService.updateUser(user);
+
+        // Save Location
+        Location homeLocation = user.getHomeAddress().getLocation();
+        homeLocation.setHome(true);
+        locationService.updateLocation(homeLocation);
+        Location officeLocation = user.getOfficeAddress().getLocation();
+        officeLocation.setHome(false);
+        locationService.updateLocation(officeLocation);
+
+        // Save GeoPoint
+        GeoPoint homeGeoPoint = user.getHomeAddress();
+        homeGeoPoint.setLocation(homeLocation);
+        GeoPoint officeGeoPoint = user.getOfficeAddress();
+        officeGeoPoint.setLocation(officeLocation);
+        geoPointService.updateGeoPoint(homeGeoPoint);
+        geoPointService.updateGeoPoint(officeGeoPoint);
+
+        // Save User
+        user.setHomeAddress(homeGeoPoint);
+        user.setOfficeAddress(officeGeoPoint);
+        userService.createUser(user);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);

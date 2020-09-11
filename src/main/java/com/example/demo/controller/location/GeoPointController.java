@@ -1,7 +1,9 @@
 package com.example.demo.controller.location;
 
 import com.example.demo.model.location.GeoPoint;
+import com.example.demo.model.user.User;
 import com.example.demo.service.location.GeoPointService;
+import com.example.demo.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,9 @@ import java.util.List;
 public class GeoPointController {
     @Autowired
     public GeoPointService geoPointService;
+
+    @Autowired
+    public UserService userService;
 
     //API trả về List GeoPoint.
     @RequestMapping(value = "/geopoint", method = RequestMethod.GET)
@@ -81,5 +86,27 @@ public class GeoPointController {
 
         geoPointService.deleteGeoPoint(id);
         return new ResponseEntity<GeoPoint>(HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping(value = "/getHomeByUserId/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GeoPoint> getHomeByUserId(@PathVariable("id") Long id) {
+        User user = userService.findById(id);
+        GeoPoint geoPoint = user.getHomeAddress();
+        if (geoPoint == null) {
+            System.out.println("Home of User with id " + id + " not found");
+            return new ResponseEntity<GeoPoint>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<GeoPoint>(geoPoint, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getOfficeByUserId/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GeoPoint> getOfficeByUserId(@PathVariable("id") Long id) {
+        User user = userService.findById(id);
+        GeoPoint geoPoint = user.getOfficeAddress();
+        if (geoPoint == null) {
+            System.out.println("Office of User with id " + id + " not found");
+            return new ResponseEntity<GeoPoint>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<GeoPoint>(geoPoint, HttpStatus.OK);
     }
 }
