@@ -167,4 +167,16 @@ public class CarpoolController {
         List<GeoPoint> geoPointList = locationService.sort(carpool.getDriver(), carpool.getPassengerList());
         return new ResponseEntity<List<GeoPoint>>(geoPointList, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/carpool/getDistance/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Double> getDistance(@PathVariable("id") Long id) {
+        Carpool carpool = carpoolService.findById(id);
+        if (carpool == null) {
+            System.out.println("Carpool with id " + id + " not found");
+            return new ResponseEntity<Double>(HttpStatus.NOT_FOUND);
+        }
+        List<GeoPoint> geoPointList = locationService.sort(carpool.getDriver(), carpool.getPassengerList());
+        double distance = locationService.getDistance(geoPointList);
+        return new ResponseEntity<Double>(distance, HttpStatus.OK);
+    }
 }

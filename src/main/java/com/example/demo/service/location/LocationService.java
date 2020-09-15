@@ -87,4 +87,13 @@ public class LocationService {
         result.add(driver.getUser().getOfficeAddress());
         return result;
     }
+
+    public double getDistance(List<GeoPoint> geoPointList) {
+        double sum = 0;
+        for (int i = 0; i < geoPointList.size() - 1; i++) {
+            double distance = distance(geoPointList.get(i).getLocation(), geoPointList.get(i+1).getLocation());
+            sum += distance;
+        }
+        return sum;
+    }
 }
