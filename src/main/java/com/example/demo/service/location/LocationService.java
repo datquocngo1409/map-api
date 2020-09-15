@@ -56,33 +56,45 @@ public class LocationService {
         List<GeoPoint> result = new ArrayList<>();
         result.add(driver.getUser().getHomeAddress());
         // code
+        List<GeoPoint> homeGeoPoint = new ArrayList<>();
         for (Passenger p : passengers) {
-            result.add(p.getUser().getHomeAddress());
+            homeGeoPoint.add(p.getUser().getHomeAddress());
+            homeGeoPoint.add(p.getUser().getOfficeAddress());
         }
-        for (int iP = 0; iP < passengers.size() - 1; iP++) {
-            int index = result.indexOf(passengers.get(iP).getUser().getHomeAddress());
-            boolean added = false;
-            for (int iR = index; iR < result.size(); iR++) {
-                double distanceFromIndexToOffice = distance(
-                        result.get(index).getLocation(),
-                        passengers.get(iP).getUser().getOfficeAddress().getLocation());
-                double distanceFromIndexToNext = distance(
-                        result.get(index).getLocation(),
-                        result.get(index + 1).getLocation()
-                );
-                if (distanceFromIndexToOffice > distanceFromIndexToNext) {
-                    continue;
-                } else {
-                    result.add(index + 1, passengers.get(iP).getUser().getOfficeAddress());
-                    added = true;
-                    break;
+        for (int i = 0; i < homeGeoPoint.size(); i++) {
+            for (int j = i + 1; j < homeGeoPoint.size(); j++) {
+                if (distance(driver.getUser().getHomeAddress().getLocation(), homeGeoPoint.get(i).getLocation()) > distance(driver.getUser().getHomeAddress().getLocation(), homeGeoPoint.get(j).getLocation())) {
+                    GeoPoint temp = homeGeoPoint.get(i);
+                    homeGeoPoint.set(i, homeGeoPoint.get(j));
+                    homeGeoPoint.set(j, temp);
                 }
             }
-            if (!added) {
-                result.add(passengers.get(iP).getUser().getOfficeAddress());
-            }
         }
-        result.add(passengers.get(passengers.size() - 1).getUser().getOfficeAddress());
+        result.addAll(homeGeoPoint);
+//        for (int iP = 0; iP < passengers.size() - 1; iP++) {
+//            int index = result.indexOf(passengers.get(iP).getUser().getHomeAddress());
+//            boolean added = false;
+//            for (int iR = index; iR < result.size() - 1; iR++) {
+//                double distanceFromIndexToOffice = distance(
+//                        result.get(index).getLocation(),
+//                        passengers.get(iP).getUser().getOfficeAddress().getLocation());
+//                double distanceFromIndexToNext = distance(
+//                        result.get(index).getLocation(),
+//                        result.get(index + 1).getLocation()
+//                );
+//                if (distanceFromIndexToOffice > distanceFromIndexToNext) {
+//                    continue;
+//                } else {
+//                    result.add(index + 1, passengers.get(iP).getUser().getOfficeAddress());
+//                    added = true;
+//                    break;
+//                }
+//            }
+//            if (!added) {
+//                result.add(passengers.get(iP).getUser().getOfficeAddress());
+//            }
+//        }
+//        result.add(passengers.get(passengers.size() - 1).getUser().getOfficeAddress());
         // code
         result.add(driver.getUser().getOfficeAddress());
         return result;

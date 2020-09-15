@@ -179,4 +179,33 @@ public class CarpoolController {
         double distance = locationService.getDistance(geoPointList);
         return new ResponseEntity<Double>(distance, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/carpool/add/{id}/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addUser(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
+        Carpool carpool = carpoolService.findById(id);
+        if (carpool == null) {
+            System.out.println("Carpool with id " + id + " not found");
+            return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+        }
+        List<GeoPoint> geoPointList = locationService.sort(carpool.getDriver(), carpool.getPassengerList());
+        double distance = locationService.getDistance(geoPointList);
+        // if add user
+        Passenger passenger = passengerService.findByUser(userService.findById(userId));
+        List<Passenger> passengers = carpool.getPassengerList();
+        if (locationService.distance(carpool.getDriver().getUser().getHomeAddress().getLocation(), passenger.getUser().getHomeAddress().getLocation())
+        > locationService.distance(carpool.getDriver().getUser().getHomeAddress().getLocation(), passenger.getUser().getOfficeAddress().getLocation())) {
+            return new ResponseEntity<String>(HttpStatus.EXPECTATION_FAILED);
+        }
+        if (!passengers.contains(passenger)) {
+            passengers.add(passenger);
+        }
+        carpool.setPassengerList(passengers);
+        List<GeoPoint> geoPointListAfter = locationService.sort(carpool.getDriver(), carpool.getPassengerList());
+        double distanceAfter = locationService.getDistance(geoPointListAfter);
+        String result = "";
+        for (GeoPoint gp : geoPointListAfter) {
+            result = result + gp.getName() + " ==> ";
+        }
+        return new ResponseEntity<String>(distance + ", " + distanceAfter, HttpStatus.OK);
+    }
 }
