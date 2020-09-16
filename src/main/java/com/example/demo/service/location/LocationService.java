@@ -1,7 +1,9 @@
 package com.example.demo.service.location;
 
+import com.example.demo.model.location.Coordinates;
 import com.example.demo.model.location.GeoPoint;
 import com.example.demo.model.location.Location;
+import com.example.demo.model.location.LocationDto;
 import com.example.demo.model.user.Driver;
 import com.example.demo.model.user.Passenger;
 import com.example.demo.repository.location.LocationRepository;
@@ -107,5 +109,16 @@ public class LocationService {
             sum += distance;
         }
         return sum;
+    }
+
+    public List<LocationDto> getLocationDtos(List<GeoPoint> geoPointList) {
+        List<LocationDto> locationDtos = new ArrayList<>();
+        for (GeoPoint geoPoint : geoPointList) {
+            LocationDto locationDto = new LocationDto(geoPoint.getLocation().getId(), geoPoint.getName(),
+                    new Coordinates(geoPoint.getLocation().getLatitude(), geoPoint.getLocation().getLongitude()),
+                    geoPoint.getLocation().isHome());
+            locationDtos.add(locationDto);
+        }
+        return locationDtos;
     }
 }

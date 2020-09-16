@@ -2,6 +2,7 @@ package com.example.demo.controller.carpool;
 
 import com.example.demo.model.carpool.Carpool;
 import com.example.demo.model.location.GeoPoint;
+import com.example.demo.model.location.LocationDto;
 import com.example.demo.model.user.Driver;
 import com.example.demo.model.user.Passenger;
 import com.example.demo.model.user.User;
@@ -193,7 +194,7 @@ public class CarpoolController {
         Passenger passenger = passengerService.findByUser(userService.findById(userId));
         List<Passenger> passengers = carpool.getPassengerList();
         if (locationService.distance(carpool.getDriver().getUser().getHomeAddress().getLocation(), passenger.getUser().getHomeAddress().getLocation())
-        > locationService.distance(carpool.getDriver().getUser().getHomeAddress().getLocation(), passenger.getUser().getOfficeAddress().getLocation())) {
+                > locationService.distance(carpool.getDriver().getUser().getHomeAddress().getLocation(), passenger.getUser().getOfficeAddress().getLocation())) {
             return new ResponseEntity<String>(HttpStatus.EXPECTATION_FAILED);
         }
         if (!passengers.contains(passenger)) {
@@ -202,10 +203,23 @@ public class CarpoolController {
         carpool.setPassengerList(passengers);
         List<GeoPoint> geoPointListAfter = locationService.sort(carpool.getDriver(), carpool.getPassengerList());
         double distanceAfter = locationService.getDistance(geoPointListAfter);
-        String result = "";
-        for (GeoPoint gp : geoPointListAfter) {
-            result = result + gp.getName() + " ==> ";
+        if (Math.abs(distanceAfter - distance) < distance / 10) {
+            this.carpoolService.updateCarpool(carpool);
+            return new ResponseEntity<String>(distance + ", " + distanceAfter, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>(distance + ", " + distanceAfter, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String>(distance + ", " + distanceAfter, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/carpool/getData/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<LocationDto>> getData(@PathVariable("id") Long id) {
+        Carpool carpool = carpoolService.findById(id);
+        if (carpool == null) {
+            System.out.println("Carpool with id " + id + " not found");
+            return new ResponseEntity<List<LocationDto>>(HttpStatus.NOT_FOUND);
+        }
+        List<GeoPoint> geoPointList = locationService.sort(carpool.getDriver(), carpool.getPassengerList());
+        List<LocationDto> locationDtos = locationService.getLocationDtos(geoPointList);
+        return new ResponseEntity<List<LocationDto>>(locationDtos, HttpStatus.OK);
     }
 }
